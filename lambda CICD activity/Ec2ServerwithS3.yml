@@ -1,0 +1,60 @@
+{
+  "Parameters":
+    {
+      "BucketName": { "Description": "Enter a the S3  Name", "Type": "String" },
+      "InstanceName":
+        { "Description": "Enter a the EC2 Instance Name", "Type": "String" },
+      "KeyName":
+        {
+          "Description": "EC2 Key Pair for SSH Access",
+          "Type": "AWS::EC2::KeyPair::KeyName",
+        },
+      "VpcId":
+        {
+          "Description": "Select the VPC from Below",
+          "Type": "List<AWS::EC2::VPC::Id>",
+          "ConstraintDescription": "must be list of VPC ids",
+        },
+      # "SubnetId":
+      #   {
+      #     "Description": "select Subnet From Below",
+      #     "Type": "AWS::EC2::Subnet::Id",
+      #   },
+      "SecurityGroupIds":
+        {
+          "Description": "Select the Security Group",
+          "Type": "List<AWS::EC2::SecurityGroup::Id>",
+          "ConstraintDescription": "must be list of EC2 security group ids",
+        },
+      "InstanceType":
+        {
+          "Description": "Instance1 EC2 instance type",
+          "Type": "String",
+          "Default": "t2.micro",
+          "AllowedValues": ["t2.micro", "t2.small"],
+        },
+    },
+  "Resources":
+    {
+      "EC2Machine":
+        {
+          "Description": "Creating the EC2",
+          "Type": "AWS::EC2::Instance",
+          "Properties":
+            {
+              "ImageId": "ami-01a4f99c4ac11b03c",
+              "InstanceType": { "Ref": "InstanceType" },
+              "KeyName": { "Ref": "KeyName" },
+              "SecurityGroupIds": { "Ref": "SecurityGroupIds" },
+              "Tags": [{ "Key": "Name", "Value": {"Ref":"InstanceName"} }],
+            }
+          
+        },
+      "S3Bucket":
+        {
+          "Type":"AWS::S3::Bucket",
+          "Properties": { "BucketName": { "Ref": "BucketName" } },
+        },
+      
+    },
+}
